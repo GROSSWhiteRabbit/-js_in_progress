@@ -134,18 +134,19 @@ window.addEventListener('DOMContentLoaded', ()=>{
     element.classList.add('show');
     element.classList.remove('hide');
     document.body.style.overflow = 'hidden';
+    listenCloseModal(element);
     clearInterval(modalTimerId);
   }
 
 
   function listenCloseModal(element) {
-    const icoClose =  element.querySelector('[data-close]');
+    
 
     document.addEventListener('keydown', (e) => {
         if(e.code === 'Escape' && element.classList.contains('show')){
         closeModal (element);}});
     element.addEventListener('click', (e) => {
-        if( e.target === modal || e.target === icoClose){
+        if( e.target === modal || e.target.getAttribute('data-close') == '' ){
             closeModal (element);
           }
     });
@@ -156,9 +157,9 @@ window.addEventListener('DOMContentLoaded', ()=>{
             element.classList.remove('show');
             document.body.style.overflow = '';
   }
-  listenCloseModal(modal);
+  
 
-//   const modalTimerId = setTimeout(showModal, 15000, modal);
+  const modalTimerId = setTimeout(showModal, 50000, modal);
   
   function showModalByScroll (){
     if(window.pageYOffset +  document.documentElement.clientHeight === document.documentElement.scrollHeight) {
@@ -173,8 +174,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
 
   window.addEventListener('scroll', showModalByScroll);
-});
-
+  
 //MenuItem
 
 class MenuCard {
@@ -249,18 +249,113 @@ new MenuCard(
 // Forms
 
 const forms = document.querySelectorAll('form');
+const massage = {
+    loading: 'img/form/spinner.svg',
+    success: 'Спасибо, мы скоро с вами свяжемся.',
+    failure: 'Что-то пошло не так...',
+};
+forms.forEach(item => {
+postData(item);
+});
 
 function postData(form) {
     form.addEventListener('submit', (e)=>{
         e.preventDefault();
+
+        const statusMassage = document.createElement('img');
+        
+        statusMassage.src = massage.loading;
+        statusMassage.style.cssText = `
+        display: block;
+        margin: 0 auto;
+        `;
+        form.insertAdjacentElement('afterend', statusMassage);
+        
+
+
         const formData = new FormData(form),
-        request = new XMLHttpRequest();
-        request.open('POST', 'server.php');
-        request.setRequestHeader('Content-type', 'multipart/form-data');
-        request.send()
+              obj = {};
+        formData.forEach((value, key)=> {
+            obj[key] = value;
+        });
+        
+
+        fetch('server.php', {
+            method: 'POST',
+            headers: {'Content-type' : 'application/json'},
+            body: JSON.stringify(obj),
+        })
+            .then(response => response)
+            .then(resp => {
+                
+                    console.log(resp);
+                    showThenksModal(massage.success);
+               
+            })
+            .catch((error)=>showThenksModal(massage.failure))
+            .finally(()=>{
+                form.reset();                
+                statusMassage.remove();
+            });
+
+            
+        // const   request = new XMLHttpRequest();
+
+        // request.open('POST', 'server.php');
+        // // request.setRequestHeader('Content-type', 'multipart/form-data');
+        // request.send(json);
+        // request.addEventListener('loadend', ()=>{
+        //     if(request.status === 200) {
+        //         console.log(request.response);
+        //         showThenksModal(massage.success);
+        //         form.reset();
+                
+        //         statusMassage.remove();
+                
+        //     } else {
+        //         showThenksModal(massage.failure);
+        //         statusMassage.remove();
+        //     }
+        // });
     });
 }
+
+function showThenksModal(massage){
+    const prevModalDialog = document.querySelector('.modal__dialog');
+    prevModalDialog.classList.add('hide');
+    showModal(modal);
+    const thenksModal = document.createElement('div');
     
+    thenksModal.classList.add('modal__dialog');
+    thenksModal.innerHTML = `
+    <div class="modal__content">
+    <div data-close class="modal__close">&times;</div>
+    <div class="modal__title">${massage}</div>
+    </div>
+    `;
+    modal.append(thenksModal);
+    
+    setTimeout(() => {
+        thenksModal.remove();
+        prevModalDialog.classList.remove('hide');
+        prevModalDialog.classList.add('show');
+        closeModal(modal);
+    },2000);
+    
+}
+
+// fetch('https://jsonplaceholder.typicode.com/posts', {
+//     method: 'POST',
+//     headers: {'Content-type' : 'application/json'},
+//     body:  JSON.stringify({name: 'alex'}),
+// })
+//     .then(resp => resp.json())
+//     .then(json => console.log(json));
+
+
+
+});
+
 
 
 

@@ -214,36 +214,21 @@ class MenuCard {
         return this.price *= this.transfer;
     }
 }
+const getResource = async (url) => {
+    const res = await fetch(url);
+    if(!res.ok){
+        throw new Error(`could not feth ${url}, status:${res.status}` );
+    }
+    return await res.json();
+};
 
-
-new MenuCard(
-    'img/tabs/vegy.jpg',
-    'vegy',
-    'Фитнес',
-    'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    9,
-    '.menu .container',
-    
-).render();
-
-new MenuCard(
-    'img/tabs/elite.jpg',
-    'elite',
-    'Премиум',
-    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-    14,
-    '.menu .container',
-    
-).render();
-
-new MenuCard(
-    'img/tabs/post.jpg',
-    'post',
-    'Постное',
-    'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-    21,
-    '.menu .container' 
-).render();
+function createMenuCard(){
+    getResource('http://localhost:3000/menu')
+    .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
+        new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    }));
+}
+createMenuCard();
 
 
 // Forms
@@ -254,11 +239,20 @@ const massage = {
     success: 'Спасибо, мы скоро с вами свяжемся.',
     failure: 'Что-то пошло не так...',
 };
-forms.forEach(item => {
-postData(item);
+forms.forEach(form => {
+    BindPostData(form);
 });
 
-function postData(form) {
+const postData = async (url, data) => {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-type' : 'application/json'},
+        body: data,
+    });
+    return await res.json();
+};
+
+function BindPostData(form) {
     form.addEventListener('submit', (e)=>{
         e.preventDefault();
 
@@ -274,18 +268,9 @@ function postData(form) {
 
 
         const formData = new FormData(form),
-              obj = {};
-        formData.forEach((value, key)=> {
-            obj[key] = value;
-        });
+              json = JSON.stringify(Object.fromEntries(formData.entries()));
         
-
-        fetch('server.php', {
-            method: 'POST',
-            headers: {'Content-type' : 'application/json'},
-            body: JSON.stringify(obj),
-        })
-            .then(response => response)
+        postData('http://localhost:3000/requests', json )   
             .then(resp => {
                 
                     console.log(resp);
@@ -344,13 +329,9 @@ function showThenksModal(massage){
     
 }
 
-// fetch('https://jsonplaceholder.typicode.com/posts', {
-//     method: 'POST',
-//     headers: {'Content-type' : 'application/json'},
-//     body:  JSON.stringify({name: 'alex'}),
-// })
-//     .then(resp => resp.json())
-//     .then(json => console.log(json));
+// fetch('http://localhost:3000/menu')
+//     .then(data => data.json())
+//     .then(res => console.log(res));  
 
 
 

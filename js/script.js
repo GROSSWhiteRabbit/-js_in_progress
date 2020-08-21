@@ -121,6 +121,17 @@ window.addEventListener('DOMContentLoaded', ()=>{
   function listenShowModalBy(btns, element){
       btns.forEach((btn) => {
           btn.addEventListener('click', () => {
+            axios.post('  http://localhost:3000/requests', {
+                firstName: 'Fred',
+                lastName: 'Flintstone'
+              })
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+            
             showModal(element);
           });
       });
@@ -214,22 +225,27 @@ class MenuCard {
         return this.price *= this.transfer;
     }
 }
-const getResource = async (url) => {
-    const res = await fetch(url);
-    if(!res.ok){
-        throw new Error(`could not feth ${url}, status:${res.status}` );
-    }
-    return await res.json();
-};
+// const getResource = async (url) => {
+//     const res = await fetch(url);
+//     if(!res.ok){
+//         throw new Error(`could not feth ${url}, status:${res.status}` );
+//     }
+//     return await res.json();
+// };
 
 function createMenuCard(){
-    getResource('http://localhost:3000/menu')
-    .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
-        new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-    }));
+    // getResource('http://localhost:3000/menu')
+    // .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
+    //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    // }));
+
+
+    axios.get('http://localhost:3000/menu')
+    .then(data => data.data.forEach(({img, altimg, title, descr, price })=>{
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        }));
 }
 createMenuCard();
-
 
 // Forms
 
@@ -329,13 +345,288 @@ function showThenksModal(massage){
     
 }
 
-// fetch('http://localhost:3000/menu')
-//     .then(data => data.json())
-//     .then(res => console.log(res));  
+// Slider
 
+// const slider = {
+//     elemCurrentNumber: document.querySelector('.offer__slider-counter #current'),
+//     elemTotalNumber: document.querySelector('.offer__slider-counter #total'),
+//     slides: document.querySelectorAll('.offer__slide'),
+//     indexVisi: 0,
+// };
+
+// startSlider();
+// let slideTimer = setInterval(showNext, 3000);
+
+// function startSlider() {
+//     showSlideI(0);
+//     slider.elemTotalNumber.textContent = getZero(slider.slides.length);
+//     listenSwitchesSlider();
+
+// }
+// function showSlideI(i){
+//     slider.slides.forEach((slide)=> {
+//         slide.classList.remove('show', 'fade');
+//         slide.classList.add('hide');
+//     });
+//     slider.slides[i].classList.add('show', 'fade');
+//     slider.slides[i].classList.remove('hide');
+//     slider.elemCurrentNumber.textContent = getZero(i + 1);
+//     slider.indexVisi = i;
+    
+// }
+
+
+// function showPrev(){
+//     if (slider.indexVisi <= 0) {
+//         showSlideI(slider.slides.length - 1);
+
+//     } else {
+//         showSlideI(slider.indexVisi - 1);
+//     }
+// }
+
+// function showNext() {
+//     if (slider.slides.length - 1 <= slider.indexVisi) {
+//         showSlideI(0);
+
+//     } else {
+//         showSlideI(slider.indexVisi + 1);
+//     }
+// }
+
+// function listenSwitchesSlider() {
+//     let waitingToStart;
+//     const prev = document.querySelector('.offer__slider-prev');
+//     const next = document.querySelector('.offer__slider-next');
+//     prev.addEventListener('click', ()=>{
+
+//         showPrev();
+//         suspendTimerSlider();
+
+//     });      
+//     next.addEventListener('click', ()=>{
+
+//         showNext();  
+//         suspendTimerSlider();
+//     });
+
+//     function suspendTimerSlider() {
+//         clearInterval(waitingToStart);
+//         clearInterval(slideTimer);
+//         waitingToStart = setTimeout(()=>{
+//             slideTimer = setInterval(showNext, 3000);
+//         }, 10000);   
+//     }
+// }
+
+const wrapper = document.querySelector('.offer__slider-wrapper'),
+    slides = document.querySelectorAll('.offer__slide'),
+    slidesField = document.querySelector('.offer__slider-inner'),
+    prev = document.querySelector('.offer__slider-prev'),
+    next = document.querySelector('.offer__slider-next'),
+    сurrent = document.querySelector('#current'),
+    total = document.querySelector('#total'),
+    slider = document.querySelector('.offer__slider');
+let   indexVisi = 1,
+    offset = 0,
+    width = window.getComputedStyle(wrapper).width;
+
+
+
+slides.forEach(slide => slide.style.width = width );
+slidesField.style.width = 100 * slides.length + "%";
+slidesField.style.display = 'flex';
+slidesField.style.transition = 'all .3s';
+wrapper.style.overflow = 'hidden';
+
+
+const indicators = document.createElement('div');
+indicators.classList.add('carousel-indicators');
+slider.append(indicators);
+
+const dots = [];
+slides.forEach((slide, i) => {
+    const dot = document.createElement('div');
+    dot.setAttribute('data-indexSlide', i+1);
+    dots.push(dot);
+    dot.classList.add('dot');
+    indicators.append(dot);
+});
+
+
+    startSlider();
+    let slideTimer = setInterval(shiftLeft, 3000);
+
+function deliteNotDigit(str){
+   return +str.replace(/\D/ig, '');
+}
+
+function shiftToSlide(i) {
+    if (i > slides.length){
+        i = slides.length;
+    }
+    if(i < 1){
+        i = 1;
+    }
+    offset = deliteNotDigit(width) * (i-1);
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    indexVisi = i;
+    сurrent.textContent = getZero(indexVisi);
+    setActiveDot(indexVisi);
+
+
+}
+
+function shiftLeft(){
+    if (offset >= deliteNotDigit(width) * (slides.length - 1)){
+        offset = 0;
+
+    } else{
+        offset += deliteNotDigit(width);
+    }
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    
+    if(indexVisi >= slides.length){
+        indexVisi = 1;
+    } else {
+        indexVisi++;
+    }
+    сurrent.textContent = getZero(indexVisi);
+    setActiveDot(indexVisi);
+    
+}
+
+function shiftRight(){
+    if (offset == 0){
+        offset = deliteNotDigit(width) * (slides.length - 1);
+
+    } else{
+        offset -= deliteNotDigit(width);
+    }
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    
+    if(indexVisi<=1){
+        indexVisi = slides.length;
+    } else {
+        indexVisi--;
+    }
+    сurrent.textContent = getZero(indexVisi);
+    setActiveDot(indexVisi);
+
+}
+function listenSwitchesSlider() {
+    let suspendTimer;
+    prev.addEventListener('click', ()=>{
+        shiftRight();
+        SetSuspendTimerSlider();
+    });
+    next.addEventListener('click', ()=>{
+        shiftLeft();
+        SetSuspendTimerSlider();
+        
+    });
+    indicators.addEventListener('click', (e)=>{
+        if(e.target.getAttribute('data-indexSlide')){
+            shiftToSlide(+e.target.getAttribute('data-indexSlide'));
+            SetSuspendTimerSlider();
+        }
+    });
+
+    function SetSuspendTimerSlider() {
+        clearInterval(suspendTimer);
+        clearInterval(slideTimer);
+        suspendTimer = setTimeout(() => {
+            slideTimer = setInterval(shiftLeft, 3000);
+        }, 10000);
+
+
+    }
+    
+
+}
+
+function setActiveDot(i){
+    dots.forEach(dot => {
+        dot.style.opacity = '.5';
+    });
+    dots[i-1].style.opacity = '1';
+    
+
+}
+
+function startSlider () {
+    listenSwitchesSlider();
+    total.textContent = getZero(slides.length);
+    сurrent.textContent = getZero(1);
+    setActiveDot(indexVisi);
+}
+
+
+
+
+
+
+
+
+// Calc calory 
+const calcResult = document.querySelector('.calculating__result span'),
+    personChoose = {
+        gender: 'female',
+        physicalActivity: 1.375,
+    };  
+let BMR = 1800;
+
+lisenActiveChoose('#gender');
+lisenActiveChoose('.calculating__choose_big');
+getDinamicInformation('.calculating__choose_medium');
+
+function getDinamicInformation(elemSelector){
+    document.querySelector(elemSelector).addEventListener('input', (e)=>{
+        personChoose[e.target.getAttribute('id')] = +`${e.target.value}`.replace(/[^\d,\.]/gi, '').replace(',', '.');
+        calcCalories();
+    });
+}
+
+    
+function setActiveChoose(elem) {
+    [...elem.parentNode.children].forEach(item => item.classList.remove('calculating__choose-item_active'));
+    elem.classList.add('calculating__choose-item_active');
+}
+
+function lisenActiveChoose(elemSelector){
+    document.querySelector(elemSelector).addEventListener('click', (e)=>{
+        if (e.target.classList.contains('calculating__choose-item')){
+            setActiveChoose(e.target);
+            if (e.target.getAttribute('data-ratio')){
+                personChoose.physicalActivity = +e.target.getAttribute('data-ratio');
+            } else {
+                personChoose.gender = e.target.getAttribute('id');
+            }
+        }
+
+         calcCalories();
+         
+    });
+}
+
+function calcCalories(){
+    if(!personChoose.gender || !personChoose.weight || !personChoose.height || !personChoose.age || !personChoose.physicalActivity){
+        calcResult.textContent = 'XXXX';
+        return;
+    }
+
+    if (personChoose.gender === 'male') {
+        BMR = 88.36 + (13.4 * personChoose.weight) + (4.8 * personChoose.height) - (5.7 * personChoose.age);
+    } if (personChoose.gender === 'female') {
+        BMR = 447.6 + (9.2 * personChoose.weight) + (3.1 * personChoose.height) - (4.3 * personChoose.age);
+    }
+    calcResult.textContent = (BMR * personChoose.physicalActivity).toFixed(0);
+    
+}
 
 
 });
+
 
 
 

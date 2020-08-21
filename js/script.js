@@ -341,7 +341,7 @@ function showThenksModal(massage){
         prevModalDialog.classList.remove('hide');
         prevModalDialog.classList.add('show');
         closeModal(modal);
-    },2000);
+    },5000);
     
 }
 
@@ -579,11 +579,15 @@ let BMR = 1800;
 lisenActiveChoose('#gender');
 lisenActiveChoose('.calculating__choose_big');
 getDinamicInformation('.calculating__choose_medium');
+let timerMasha;
 
 function getDinamicInformation(elemSelector){
     document.querySelector(elemSelector).addEventListener('input', (e)=>{
+        clearInterval(timerMasha);
         personChoose[e.target.getAttribute('id')] = +`${e.target.value}`.replace(/[^\d,\.]/gi, '').replace(',', '.');
         calcCalories();
+        timerMasha = setTimeout(()=>{showThenksModal('Машка, ты и так красивая \u2764)))');},7000);
+        
     });
 }
 

@@ -587,7 +587,8 @@ function getDinamicInformation(elemSelector){
         personChoose[e.target.getAttribute('id')] = +`${e.target.value}`.replace(/[^\d,\.]/gi, '').replace(',', '.');
         calcCalories();
         if(!timerMasha){
-            timerMasha = setTimeout(()=>{showThenksModal('Машка, ты и так красивая \u2764)))');},7000);
+            
+            timerMasha = setTimeout(()=>{alert('Машка, ты и так красивая \u2764)))');},7000);
         }
         
         

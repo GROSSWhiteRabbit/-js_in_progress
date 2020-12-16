@@ -1,3 +1,4 @@
+
 import timer  from './modules/timer' ;    
 import modal  from './modules/modal' ;  
 import  cards from './modules/cards' ;  
@@ -16,10 +17,11 @@ const modalTimerId = setTimeout(()=>showModal('.modal', modalTimerId ), 50000, m
 
 
   tabs('.tabheader__item', '.tabcontent', '.tabheader__items');
-  timer('.timer', '2020-09-11');
+  timer('.timer', '2021-05-20');
   modal('.modal', '[data-modal]', modalTimerId );
   cards();
   forms('form', modalTimerId);
+
   slider({
     sliderSelector: '.offer__slider',
     wrapperSelector: '.offer__slider-wrapper',
@@ -30,7 +32,12 @@ const modalTimerId = setTimeout(()=>showModal('.modal', modalTimerId ), 50000, m
     totalSelector: '#total',
     currentSelector: '#current',
 });
+
+
+
+
   calcCalory();
+  
 });
 
 

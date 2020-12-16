@@ -117,8 +117,12 @@ function slider({
         indicators.append(dot);
     });
 
+    try{
+        startSlider();
+    } catch(e){
+        console.error('ERRRRRRRRR');
+    }
 
-    startSlider();
     let slideTimer = setInterval(shiftLeft, 3000);
 
     function deliteNotDigit(str) {

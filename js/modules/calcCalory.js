@@ -33,7 +33,6 @@ function calcCalory() {
                 e.target.style.border = 'none';
             }
             personChoose[e.target.getAttribute('id')] = +e.target.value.replace(',', '.');
-            console.log(personChoose[e.target.getAttribute('id')]);
             calcCalories();
             if (!timerMasha) {
 

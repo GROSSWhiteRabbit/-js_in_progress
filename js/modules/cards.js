@@ -42,8 +42,13 @@ function cards() {
 
     
     function createMenuCard(){
-        getResource('http://localhost:3000/menu')
-        .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
+        // getResource('http://localhost:3000/menu')
+        // .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
+        //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        // }));
+
+        getResource('../../db.json')
+        .then(arr => arr.menu.forEach(({img, altimg, title, descr, price })=>{
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         }));
     

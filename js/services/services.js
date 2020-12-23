@@ -6,7 +6,7 @@ const postData = async (url, data) => {
         },
         body: data,
     });
-    return await res.json();
+    return await res.text();
 };
 
 const getResource = async (url) => {

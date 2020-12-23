@@ -11,7 +11,6 @@ import {showModal} from './modules/modal';
 
 window.addEventListener('DOMContentLoaded', ()=>{
     
-      // const  timer = require('./modules/timer');
 const modalTimerId = setTimeout(()=>showModal('.modal', modalTimerId ), 50000, modal);
 
 
@@ -45,4 +44,3 @@ const modalTimerId = setTimeout(()=>showModal('.modal', modalTimerId ), 50000, m
 
 
 
- 

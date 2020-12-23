@@ -375,8 +375,12 @@ function cards() {
   }();
 
   function createMenuCard() {
-    Object(_services_services__WEBPACK_IMPORTED_MODULE_14__["getResource"])('http://localhost:3000/menu').then(function (arr) {
-      return arr.forEach(function (_ref) {
+    // getResource('http://localhost:3000/menu')
+    // .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
+    //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    // }));
+    Object(_services_services__WEBPACK_IMPORTED_MODULE_14__["getResource"])('../../db.json').then(function (arr) {
+      return arr.menu.forEach(function (_ref) {
         var img = _ref.img,
             altimg = _ref.altimg,
             title = _ref.title,
@@ -438,7 +442,7 @@ __webpack_require__.r(__webpack_exports__);
 function forms(formsSelector, modalTimerId) {
   var forms = document.querySelectorAll(formsSelector);
   var massage = {
-    loading: 'img/form/spinner.svg',
+    loading: '../../img/form/spinner.svg',
     success: 'Спасибо, мы скоро с вами свяжемся.',
     failure: 'Что-то пошло не так...'
   };
@@ -455,7 +459,8 @@ function forms(formsSelector, modalTimerId) {
       form.insertAdjacentElement('afterend', statusMassage);
       var formData = new FormData(form),
           json = JSON.stringify(Object.fromEntries(formData.entries()));
-      Object(_services_services__WEBPACK_IMPORTED_MODULE_9__["postData"])('http://localhost:3000/requests', json).then(function (resp) {
+      Object(_services_services__WEBPACK_IMPORTED_MODULE_9__["postData"])( // 'http://localhost:3000/requests',
+      'server.php', json).then(function (resp) {
         console.log(resp);
         showThenksModal(massage.success);
       }).catch(function (error) {
@@ -854,7 +859,6 @@ function tabs(tabsSelector, tabContentSelector, tabsParentSelector) {
   tabsParent.addEventListener('click', function (e) {
     e.preventDefault();
     var target = e.target;
-    console.dir(target);
 
     if (target && target.matches('.tabheader__item')) {
       tabs.forEach(function (tab, i) {
@@ -973,7 +977,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.addEventListener('DOMContentLoaded', function () {
-  // const  timer = require('./modules/timer');
   var modalTimerId = setTimeout(function () {
     return Object(_modules_modal__WEBPACK_IMPORTED_MODULE_1__["showModal"])('.modal', modalTimerId);
   }, 50000, _modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"]);
@@ -1045,7 +1048,7 @@ var postData = /*#__PURE__*/function () {
           case 2:
             res = _context.sent;
             _context.next = 5;
-            return res.json();
+            return res.text();
 
           case 5:
             return _context.abrupt("return", _context.sent);

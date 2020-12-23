@@ -6,7 +6,7 @@ function forms(formsSelector, modalTimerId) {
 
     const forms = document.querySelectorAll(formsSelector);
     const massage = {
-        loading: 'img/form/spinner.svg',
+        loading: '../../img/form/spinner.svg',
         success: 'Спасибо, мы скоро с вами свяжемся.',
         failure: 'Что-то пошло не так...',
     };
@@ -33,8 +33,11 @@ function forms(formsSelector, modalTimerId) {
 
             const formData = new FormData(form),
                 json = JSON.stringify(Object.fromEntries(formData.entries()));
-
-            postData('http://localhost:3000/requests', json)
+                
+            postData(
+                // 'http://localhost:3000/requests',
+                'server.php',
+                json)
                 .then(resp => {
 
                     console.log(resp);

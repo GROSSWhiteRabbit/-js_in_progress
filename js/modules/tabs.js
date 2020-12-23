@@ -29,7 +29,6 @@ function tabs(tabsSelector, tabContentSelector, tabsParentSelector ){
     tabsParent.addEventListener('click',(e) => {
         e.preventDefault();
         const target = e.target;
-        console.dir(target);
         if(target && target.matches('.tabheader__item')){
             tabs.forEach((tab,i) => {
                 if(tab == target) {

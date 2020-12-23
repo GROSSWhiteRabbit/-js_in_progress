@@ -6,7 +6,7 @@ function forms(formsSelector, modalTimerId) {
 
     const forms = document.querySelectorAll(formsSelector);
     const massage = {
-        loading: 'spinner.svg',
+        loading: 'img/form/spinner.svg',
         success: 'Спасибо, мы скоро с вами свяжемся.',
         failure: 'Что-то пошло не так...',
     };

@@ -442,7 +442,7 @@ __webpack_require__.r(__webpack_exports__);
 function forms(formsSelector, modalTimerId) {
   var forms = document.querySelectorAll(formsSelector);
   var massage = {
-    loading: 'spinner.svg',
+    loading: 'img/form/spinner.svg',
     success: 'Спасибо, мы скоро с вами свяжемся.',
     failure: 'Что-то пошло не так...'
   };

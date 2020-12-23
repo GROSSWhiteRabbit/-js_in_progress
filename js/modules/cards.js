@@ -47,7 +47,7 @@ function cards() {
         //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         // }));
 
-        getResource('../../db.json')
+        getResource('db.json')
         .then(arr => arr.menu.forEach(({img, altimg, title, descr, price })=>{
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         }));

@@ -379,7 +379,7 @@ function cards() {
     // .then(arr => arr.forEach(({img, altimg, title, descr, price })=>{
     //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
     // }));
-    Object(_services_services__WEBPACK_IMPORTED_MODULE_14__["getResource"])('../../db.json').then(function (arr) {
+    Object(_services_services__WEBPACK_IMPORTED_MODULE_14__["getResource"])('db.json').then(function (arr) {
       return arr.menu.forEach(function (_ref) {
         var img = _ref.img,
             altimg = _ref.altimg,
@@ -442,7 +442,7 @@ __webpack_require__.r(__webpack_exports__);
 function forms(formsSelector, modalTimerId) {
   var forms = document.querySelectorAll(formsSelector);
   var massage = {
-    loading: '../../img/form/spinner.svg',
+    loading: 'spinner.svg',
     success: 'Спасибо, мы скоро с вами свяжемся.',
     failure: 'Что-то пошло не так...'
   };
